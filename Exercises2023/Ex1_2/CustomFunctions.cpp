@@ -15,6 +15,42 @@ int getLength(vector<float> vec){
     return length;
 }
 
+float power(float base, float exponent){
+
+    int exp;
+
+    exp=(int)exponent;
+
+    if(exponent-exp>=0.5){
+        exp++;
+    }
+
+    if(exp==0){
+        return 1;
+    }
+    if(exp==1){
+        return base;
+    }
+    else{
+        return base*power(base, exp-1);
+    }
+}
+
+vector<float> power(vector<float> xvec, vector<float> yvec){
+
+    int N;
+    vector<float> powers;
+    N=getLength(xvec);
+
+    for(int i=0; i<=N-1; i++){
+        powers.push_back(power(xvec[i], yvec[i]));
+    }   
+
+    return powers;
+
+}
+
+
 int readLinesFromFile(string file_name, vector<float>& xvec, vector<float>& yvec){
 
     ifstream data_file;
@@ -80,6 +116,19 @@ void print(string line0, vector<float> vec, string names[]){
     }   
 }
 
+void print(string line0, vector<float> vec){
+
+    int length; 
+
+    length=getLength(vec);
+
+    cout<<line0<<endl;
+
+    for(int i=0; i<=length-1; i++){
+        cout<<vec[i]<<endl;
+    }   
+}
+
 void print(string line0, vector<float> vec1, vector<float> vec2, int lines){
 
     int default_lines=5;
@@ -100,19 +149,20 @@ void print(string line0, vector<float> vec1, vector<float> vec2, int lines){
 }
 
 
-int magnitude(vector<float> xvec , vector<float> yvec, vector<float>& mag){
+vector<float> magnitude(vector<float> xvec , vector<float> yvec){
 
     int length;
     float m;
+    vector<float> mag;
 
     length=getLength(xvec);
 
     for(int i=0; i<=length-1; i++){
-            m=sqrt(xvec[i]*xvec[i]+yvec[i]*yvec[i]);
+            m=sqrt(power(xvec[i], 2)+power(yvec[i], 2));
             mag.push_back(m);
     }
 
-    return length;
+    return mag;
 
 }
 
@@ -154,7 +204,42 @@ int save(string name, string line0, vector<float> vector_data, string names[]){
 
     file<<line0<<endl;
     for(int i=0; i<=length-1; i++){
-        file<<names[i]<<": "<<vector_data[i]<<endl;
+        if(i<length-1){
+            file<<names[i]<<": "<<vector_data[i]<<endl;
+        }
+        else{
+            file<<names[i]<<": "<<vector_data[i];
+        }
+        
+    }
+
+    file.close();
+
+    return 1;
+}
+
+int save(string name, string line0, vector<float> vector_data){
+
+    ofstream file;
+    int length;
+
+    file.open(name);
+
+    length=getLength(vector_data);
+
+    if(file.fail()){
+        cout<<"Problem with opening the file "<<"\""<<name<<"\""<<endl;
+        return -1;
+    }
+
+    file<<line0<<endl;
+    for(int i=0; i<=length-1; i++){
+        if(i<length-1){
+            file<<vector_data[i]<<endl;
+        }
+        else{
+            file<<vector_data[i];
+        }
     }
 
     file.close();
@@ -164,11 +249,12 @@ int save(string name, string line0, vector<float> vector_data, string names[]){
 
 
 
-int fit(vector<float> xvec, vector<float> yvec, vector<float> xvec_err, vector<float> yvec_err, vector<float>& param){
+vector<float> fit(vector<float> xvec, vector<float> yvec, vector<float> xvec_err, vector<float> yvec_err){
 
     int N;
     float p, q;
     string names[2];
+    vector<float> param;
     N=getLength(xvec);
 
     float sumx, sumy, prodxx, prodxy, chi2=0;
@@ -197,12 +283,11 @@ int fit(vector<float> xvec, vector<float> yvec, vector<float> xvec_err, vector<f
     print("y=p*x+q", param, names);
     save("FitParameters.txt", "y=p*x+q", param, names);
 
-    return 1;
+    return param;
 }
 
 float linFunc(float x, float p, float q){
 
     return p*x+q;
 }
-
 
