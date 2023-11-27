@@ -39,7 +39,7 @@ int readLinesFromFile(string file_name, vector<float>& xvec, vector<float>& yvec
     xvec.push_back(x);
     yvec.push_back(y);
 
-    cout<<"Line"<<lines<<":"<<x<<","<<y<<"|Seperator:"<<sep<<endl;
+    //cout<<"Line"<<lines<<":"<<x<<","<<y<<"|Seperator:"<<sep<<endl;
     
     lines++;
     }
@@ -49,7 +49,7 @@ int readLinesFromFile(string file_name, vector<float>& xvec, vector<float>& yvec
 }
 
 
-void printArray(vector<float> vec, int lines){
+void print(vector<float> vec, int lines){
 
     int default_lines=5;
     int plot_lines=lines;
@@ -67,8 +67,40 @@ void printArray(vector<float> vec, int lines){
     }   
 }
 
+void print(string line0, vector<float> vec, string names[]){
 
-int magnitude(vector<float>& xvec , vector<float>& yvec, vector<float>& mag){
+    int length; 
+
+    length=getLength(vec);
+
+    cout<<line0<<endl;
+
+    for(int i=0; i<=length-1; i++){
+        cout<<names[i]<<": "<<vec[i]<<endl;
+    }   
+}
+
+void print(string line0, vector<float> vec1, vector<float> vec2, int lines){
+
+    int default_lines=5;
+    int plot_lines=lines;
+    int length; 
+
+    length=getLength(vec1);
+
+    if(lines>length){
+        cout<<"Requested number of lines not available. Here are "<<default_lines<<endl;
+        plot_lines=default_lines;
+    }
+
+    cout<<line0<<endl;
+    for(int i=0; i<=plot_lines-1; i++){
+        cout<<vec1[i]<<","<<vec2[i]<<endl;
+    }   
+}
+
+
+int magnitude(vector<float> xvec , vector<float> yvec, vector<float>& mag){
 
     int length;
     float m;
@@ -106,13 +138,40 @@ float dotProduct(vector<float> vec1, vector<float> vec2){
     return sum;
 }   
 
-int fit(vector<float>& xvec, vector<float>& yvec, vector<float>& param){
+int save(string name, string line0, vector<float> vector_data, string names[]){
+
+    ofstream file;
+    int length;
+
+    file.open(name);
+
+    length=getLength(vector_data);
+
+    if(file.fail()){
+        cout<<"Problem with opening the file "<<"\""<<name<<"\""<<endl;
+        return -1;
+    }
+
+    file<<line0<<endl;
+    for(int i=0; i<=length-1; i++){
+        file<<names[i]<<": "<<vector_data[i]<<endl;
+    }
+
+    file.close();
+
+    return 1;
+}
+
+
+
+int fit(vector<float> xvec, vector<float> yvec, vector<float> xvec_err, vector<float> yvec_err, vector<float>& param){
 
     int N;
     float p, q;
+    string names[2];
     N=getLength(xvec);
 
-    float sumx, sumy, prodxx, prodxy;
+    float sumx, sumy, prodxx, prodxy, chi2=0;
 
     sumx=sum(xvec);
     sumy=sum(yvec);
@@ -125,11 +184,25 @@ int fit(vector<float>& xvec, vector<float>& yvec, vector<float>& param){
 
     q=( prodxx*sumy - prodxy*sumx) / ( N*prodxx - sumx*sumx );
 
+    for(int i=0; i<=N-1; i++){
+        0;
+       // chi2+=( ( (yvec[i]-linFunc(xvec[i], p, q))*(yvec[i]-linFunc(xvec[i], p, q))) / () );
+    }
+
     param.push_back(p);
     param.push_back(q);
+    names[0]="p";
+    names[1]="q";
 
-    string s;
+    print("y=p*x+q", param, names);
+    save("FitParameters.txt", "y=p*x+q", param, names);
 
     return 1;
 }
+
+float linFunc(float x, float p, float q){
+
+    return p*x+q;
+}
+
 
