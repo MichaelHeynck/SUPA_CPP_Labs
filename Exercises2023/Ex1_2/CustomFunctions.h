@@ -8,7 +8,6 @@ using namespace std;
 
 int readLinesFromFile(string, vector<float>&, vector<float>&);
 
-void print(vector<float>, int);
 
 void print(string, vector<float>, vector<float>, int);
 
@@ -33,3 +32,5 @@ int save(string, string, vector<float>);
 float power(float, float);
 
 vector<float> power(vector<float>, vector<float>);
+
+float linFunc(float, float, float);

@@ -6,7 +6,7 @@
 using namespace std;
 
 
-
+//get the number of elements in a vector
 int getLength(vector<float> vec){
     int length=0;
     for (auto i : vec){
@@ -15,6 +15,7 @@ int getLength(vector<float> vec){
     return length;
 }
 
+//calculate the power of a base number with an exponent. The exponent is rounded to the nearest integer
 float power(float base, float exponent){
 
     int exp;
@@ -36,6 +37,7 @@ float power(float base, float exponent){
     }
 }
 
+//calculate the power for each element of two vectors, xvec being the base and yvec being the exponents
 vector<float> power(vector<float> xvec, vector<float> yvec){
 
     int N;
@@ -50,7 +52,7 @@ vector<float> power(vector<float> xvec, vector<float> yvec){
 
 }
 
-
+//read two colums seperated by a "," and save them in the vectors provided in the argument
 int readLinesFromFile(string file_name, vector<float>& xvec, vector<float>& yvec){
 
     ifstream data_file;
@@ -61,8 +63,8 @@ int readLinesFromFile(string file_name, vector<float>& xvec, vector<float>& yvec
         return -1;
     }
 
-    float x, y; //variables that hold the x and y value per line 
-    char sep, x_name, y_name; // character that seperates the x and y values
+    float x, y; 
+    char sep, x_name, y_name; 
     int lines=1;
     
     while(!data_file.eof()){
@@ -75,7 +77,6 @@ int readLinesFromFile(string file_name, vector<float>& xvec, vector<float>& yvec
     xvec.push_back(x);
     yvec.push_back(y);
 
-    //cout<<"Line"<<lines<<":"<<x<<","<<y<<"|Seperator:"<<sep<<endl;
     
     lines++;
     }
@@ -84,25 +85,7 @@ int readLinesFromFile(string file_name, vector<float>& xvec, vector<float>& yvec
     return lines;
 }
 
-
-void print(vector<float> vec, int lines){
-
-    int default_lines=5;
-    int plot_lines=lines;
-    int length; 
-
-    length=getLength(vec);
-
-    if(lines>length){
-        cout<<"Requested number of lines not available. Here are "<<default_lines<<endl;
-        plot_lines=default_lines;
-    }
-
-    for(int i=0; i<=plot_lines-1; i++){
-        cout<<vec[i]<<endl;
-    }   
-}
-
+//print a vector. The first line to be printed is a string containing information about the printed values of the vector. Each line contains a specific name and a following element form the vector 
 void print(string line0, vector<float> vec, string names[]){
 
     int length; 
@@ -116,6 +99,7 @@ void print(string line0, vector<float> vec, string names[]){
     }   
 }
 
+//just print one element per line, the elements are provided by a vector. The first line is a string containing infomartion about the printed vector
 void print(string line0, vector<float> vec){
 
     int length; 
@@ -129,6 +113,7 @@ void print(string line0, vector<float> vec){
     }   
 }
 
+//print two vectors, two elements per line and seperated by a ",". The first line provides information about the printed vectors. If the number of requested lines is larger than the size of the vectores, print only 5 lines
 void print(string line0, vector<float> vec1, vector<float> vec2, int lines){
 
     int default_lines=5;
@@ -148,7 +133,7 @@ void print(string line0, vector<float> vec1, vector<float> vec2, int lines){
     }   
 }
 
-
+//calculate and return  a vector containing the magnitude (sqrt(x^2+y^2)) of the given XY-vector, defined as two vectors (x and y coordinate with origin at (0,0))
 vector<float> magnitude(vector<float> xvec , vector<float> yvec){
 
     int length;
@@ -166,6 +151,7 @@ vector<float> magnitude(vector<float> xvec , vector<float> yvec){
 
 }
 
+//calculate the sum over each element of a vector 
 float sum(vector<float> vec){
 
     float sum=0;
@@ -176,6 +162,7 @@ float sum(vector<float> vec){
     return sum;
 }
 
+//calculate the dot product of a vector (sum over the product of two elements at the same position of a vector)
 float dotProduct(vector<float> vec1, vector<float> vec2){
 
     int length;
@@ -188,6 +175,7 @@ float dotProduct(vector<float> vec1, vector<float> vec2){
     return sum;
 }   
 
+//save the data of a vector. Each lines contains a name and a data element. The first line contains information about the saved data. The File can be named with a string.
 int save(string name, string line0, vector<float> vector_data, string names[]){
 
     ofstream file;
@@ -218,6 +206,7 @@ int save(string name, string line0, vector<float> vector_data, string names[]){
     return 1;
 }
 
+//Save the data of a vector. The first line provides information about the saved data. The filename is determined by a string 
 int save(string name, string line0, vector<float> vector_data){
 
     ofstream file;
@@ -247,13 +236,19 @@ int save(string name, string line0, vector<float> vector_data){
     return 1;
 }
 
+//calculates the output of a linear function y=p*x=q
+float linFunc(float x, float p, float q){
 
+    return p*x+q;
+}
 
+//calculates the the paramaters p and q of a linear fit using the least sqares method. Also calculates the chi sqaured divided by the numbers of freedom to estimate the goodness of the fit
+//The result is saved as a vector, the first element is the p value, the second element is the q value and the thrid element is the chi squared value devided by the number of freedom
 vector<float> fit(vector<float> xvec, vector<float> yvec, vector<float> xvec_err, vector<float> yvec_err){
 
     int N;
     float p, q;
-    string names[2];
+    string names[3];
     vector<float> param;
     N=getLength(xvec);
 
@@ -265,20 +260,27 @@ vector<float> fit(vector<float> xvec, vector<float> yvec, vector<float> xvec_err
     prodxx=dotProduct(xvec, xvec);
     prodxy=dotProduct(xvec, yvec);
 
+    
 
     p=( N*prodxy - sumx*sumy) / ( N*prodxx -sumx*sumx);
 
     q=( prodxx*sumy - prodxy*sumx) / ( N*prodxx - sumx*sumx );
 
+
+
     for(int i=0; i<=N-1; i++){
-        0;
-       // chi2+=( ( (yvec[i]-linFunc(xvec[i], p, q))*(yvec[i]-linFunc(xvec[i], p, q))) / () );
+        chi2+=( power((yvec[i]-linFunc(xvec[i], p, q)), 2) / power(yvec_err[i], 2) );
     }
 
+
+
+    chi2/=(N-2);
     param.push_back(p);
     param.push_back(q);
+    param.push_back(chi2);
     names[0]="p";
     names[1]="q";
+    names[2]="chi^2";
 
     print("y=p*x+q", param, names);
     save("FitParameters.txt", "y=p*x+q", param, names);
@@ -286,8 +288,4 @@ vector<float> fit(vector<float> xvec, vector<float> yvec, vector<float> xvec_err
     return param;
 }
 
-float linFunc(float x, float p, float q){
-
-    return p*x+q;
-}
 
