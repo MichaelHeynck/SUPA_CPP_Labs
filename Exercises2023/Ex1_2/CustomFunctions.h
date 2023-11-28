@@ -1,3 +1,9 @@
+/*
+Author:
+Michael Heynck
+*/
+
+
 #pragma once
 
 #include <iostream>

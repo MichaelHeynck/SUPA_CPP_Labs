@@ -1,3 +1,13 @@
+/*
+Author:
+Michael Heynck
+
+Comments:
+A makefile is available to compile the code
+*/
+
+
+
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -32,7 +42,7 @@ int main (){
 
     cout<<endl;
     cout<<"2: Linear fit"<<endl;
-    cout<<"Calculates a linear fit to the data using the least squares method. Also calculates the chi2 squared divided by the number of freedom."<<endl;
+    cout<<"Calculates a linear fit to the data using the least squares method. Also calculates the chi2 squared divided by the number of degrees of freedom."<<endl;
 
     cout<<endl;
     cout<<"3: Magnitudes"<<endl;
@@ -72,7 +82,13 @@ int main (){
             }
             case 2:{
                 vector<float> fit_param;
+                string names[3];
+                names[0]="p";
+                names[1]="q";
+                names[2]="chi^2";
                 fit_param=fit(xvec, yvec, xvec_error, yvec_error);
+                print("y=p*x+q", fit_param, names);
+                save("FitParameters.txt", "y=p*x+q", fit_param, names);
                 break;
             }
 
