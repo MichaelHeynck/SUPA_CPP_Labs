@@ -39,7 +39,7 @@ protected:
   bool m_plotfunction = false; //Flag to determine whether to plot function
   bool m_plotdatapoints = false; //Flag to determine whether to plot input data
   bool m_plotsamplepoints = false; //Flag to determine whether to plot sampled data 
-  double integrate(int Ndiv);
+  double integrate(int Ndiv); //numerically integrate a function
   std::vector< std::pair<double, double> > makeHist(std::vector<double> &points, int Nbins); //Helper function to turn data points into histogram with Nbins
   void checkPath(std::string outstring); //Helper function to ensure data and png paths are correct
   void generatePlot(Gnuplot &gp); 

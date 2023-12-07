@@ -61,9 +61,18 @@ double FiniteFunction::callFunction(double x) {return this->invxsquared(x);}; //
 Integration by hand (output needed to normalise function when plotting)
 ###################
 */ 
+// Integrate a function using the trapezoidal sum
 double FiniteFunction::integrate(int Ndiv){ //private
-  //ToDo write an integrator
-  return -99;  
+  double step = (m_RMax - m_RMin)/(double)Ndiv;
+  double x = m_RMin;
+  double integralResult=0;
+
+
+  for (int i = 0; i < Ndiv; i++){
+    integralResult+=( (this->callFunction(x)+this->callFunction(x+step))*step/2 );
+    x += step;
+  } 
+  return integralResult;
 }
 double FiniteFunction::integral(int Ndiv) { //public
   if (Ndiv <= 0){
