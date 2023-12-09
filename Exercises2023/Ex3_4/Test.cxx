@@ -40,9 +40,9 @@ data_file.close();
 
 
 
-FiniteFunction ff(-8 ,8, "MysteryTest");
+CauchyLorentzFunction ff(-10,10,0,-2,"gamma");
 ff.plotData(xvec, 100, true);
 ff.plotFunction();
-ff.~FiniteFunction();
+ff.~CauchyLorentzFunction();
 
 }

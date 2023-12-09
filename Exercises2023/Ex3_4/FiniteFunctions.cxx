@@ -3,6 +3,7 @@
 #include <vector>
 #include "FiniteFunctions.h"
 #include <filesystem> //To check extensions in a nice way
+#include <math.h>
 
 #include "gnuplot-iostream.h" //Needed to produce plots (not part of the course) 
 
@@ -31,6 +32,43 @@ FiniteFunction::~FiniteFunction(){
   this->generatePlot(gp); //Generate the plot and save it to a png using "outfile" for naming 
 }
 
+//NormalDistributionFunction::NormalDistributionFunction(){
+//  FiniteFunction();
+//  pm_mu=0;
+//  pm_sigma=1;
+//  this->checkPath("NormalDistributionFunction");
+//};
+
+NormalDistributionFunction::NormalDistributionFunction() : FiniteFunction(){
+  pm_mu=0;
+  pm_sigma=1;
+  this->checkPath("NormalDistributionFunction");
+};
+
+NormalDistributionFunction::NormalDistributionFunction(double range_min, double range_max, double mu, double sigma, std::string outfile) : FiniteFunction(range_min, range_max, outfile){  
+
+  pm_mu=mu;
+  pm_sigma=sigma;
+
+};
+
+CauchyLorentzFunction::CauchyLorentzFunction() : FiniteFunction(){
+  pm_x0=0;
+  pm_gamma=1;
+  this->checkPath("CauchyLorentzFunction");
+};
+
+CauchyLorentzFunction::CauchyLorentzFunction(double range_min, double range_max, double x0, double gamma, std::string outfile) : FiniteFunction(range_min, range_max, outfile){  
+  if(gamma<0){
+    pm_gamma=0;
+    std::cout<<"gamma has to be larger than zero, set it to 0."<<std::endl;
+  }
+  pm_x0=x0;
+  pm_gamma=gamma;
+
+};
+
+
 /*
 ###################
 //Setters
@@ -40,13 +78,22 @@ void FiniteFunction::setRangeMin(double RMin) {m_RMin = RMin;};
 void FiniteFunction::setRangeMax(double RMax) {m_RMax = RMax;};
 void FiniteFunction::setOutfile(std::string Outfile) {this->checkPath(Outfile);};
 
+void NormalDistributionFunction::setMu(double mu) {pm_mu = mu;};
+void NormalDistributionFunction::setSigma(double sigma) {pm_sigma = sigma;};
+
+void CauchyLorentzFunction::setX0(double x0) {pm_x0 = x0;};
+void CauchyLorentzFunction::setGamma(double gamma) {pm_gamma = gamma;};
+
 /*
 ###################
 //Getters
-###################
+###################s
 */ 
 double FiniteFunction::rangeMin() {return m_RMin;};
 double FiniteFunction::rangeMax() {return m_RMax;};
+
+double NormalDistributionFunction::getMu() {return pm_mu;};
+double NormalDistributionFunction::getSigma() {return pm_sigma;};
 
 /*
 ###################
@@ -86,6 +133,35 @@ double FiniteFunction::integral(int Ndiv) { //public
   }
   else return m_Integral; //Don't bother re-calculating integral if Ndiv is the same as the last call
 }
+
+
+
+
+NormalDistributionFunction::~NormalDistributionFunction(){
+  Gnuplot gp; //Set up gnuplot object
+  this->generatePlot(gp); //Generate the plot and save it to a png using "outfile" for naming 
+}
+
+CauchyLorentzFunction::~CauchyLorentzFunction(){
+  Gnuplot gp; //Set up gnuplot object
+  this->generatePlot(gp); //Generate the plot and save it to a png using "outfile" for naming 
+}
+
+double NormalDistributionFunction::normalDistribution(double x){
+ return ( 1/(pm_sigma*sqrt(2*M_PI)) )*exp(-0.5*(x-pm_mu)*(x-pm_mu)/(pm_sigma*pm_sigma));
+};
+
+double NormalDistributionFunction::callFunction(double x){
+  return this->normalDistribution(x);
+};
+
+double CauchyLorentzFunction::CauchyLorentzDistributionFunction(double x){
+ return 1/( M_PI*pm_gamma*(1+((x-pm_x0)/pm_gamma)*((x-pm_x0)/pm_gamma)) );
+};
+
+double CauchyLorentzFunction::callFunction(double x){
+  return this->CauchyLorentzDistributionFunction(x);
+};
 
 /*
 ###################
@@ -171,7 +247,7 @@ std::vector< std::pair<double,double> > FiniteFunction::makeHist(std::vector<dou
   for (double point : points){
     //Get bin index (starting from 0) the point falls into using point value, range, and Nbins
     int bindex = static_cast<int>(floor((point-m_RMin)/((m_RMax-m_RMin)/(double)Nbins)));
-    if (bindex<0 || bindex>Nbins){
+    if (bindex<0 || bindex>Nbins-1){
       continue;
     }
     bins[bindex]++; //weight of 1 for each data point

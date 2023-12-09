@@ -47,3 +47,44 @@ protected:
 private:
   double invxsquared(double x); //The default functional form
 };
+
+
+class NormalDistributionFunction : public FiniteFunction{
+
+public:
+  NormalDistributionFunction();
+  NormalDistributionFunction(double range_min, double range_max, double mu, double sigma, std::string outfile);
+  ~NormalDistributionFunction();
+  double callFunction(double x);
+  double getMu();
+  double getSigma();
+  void setMu(double mu);
+  void setSigma(double sigma);
+  
+private:
+
+  double pm_sigma;
+  double pm_mu;
+  double normalDistribution(double x);
+
+};
+
+class CauchyLorentzFunction : public FiniteFunction{
+
+public:
+  CauchyLorentzFunction();
+  CauchyLorentzFunction(double range_min, double range_max, double x0, double gamma, std::string outfile);
+  ~CauchyLorentzFunction();
+  double callFunction(double x);
+  double getX0();
+  double getGamma();
+  void setX0(double x0);
+  void setGamma(double gamma);
+  
+private:
+
+  double pm_x0;
+  double pm_gamma;
+  double CauchyLorentzDistributionFunction(double x);
+
+};
