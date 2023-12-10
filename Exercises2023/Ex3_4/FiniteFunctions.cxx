@@ -32,13 +32,6 @@ FiniteFunction::~FiniteFunction(){
   this->generatePlot(gp); //Generate the plot and save it to a png using "outfile" for naming 
 }
 
-//NormalDistributionFunction::NormalDistributionFunction(){
-//  FiniteFunction();
-//  pm_mu=0;
-//  pm_sigma=1;
-//  this->checkPath("NormalDistributionFunction");
-//};
-
 NormalDistributionFunction::NormalDistributionFunction() : FiniteFunction(){
   pm_mu=0;
   pm_sigma=1;
@@ -46,11 +39,21 @@ NormalDistributionFunction::NormalDistributionFunction() : FiniteFunction(){
 };
 
 NormalDistributionFunction::NormalDistributionFunction(double range_min, double range_max, double mu, double sigma, std::string outfile) : FiniteFunction(range_min, range_max, outfile){  
-
+  if(sigma<=0){
+    pm_sigma=1;
+    std::cout<<"sigma has to be larger than 0, set it to 1."<<std::endl;
+  }
+  else{
+    pm_sigma=sigma;
+  }
   pm_mu=mu;
-  pm_sigma=sigma;
-
+  
 };
+
+NormalDistributionFunction::~NormalDistributionFunction(){
+  Gnuplot gp; //Set up gnuplot object
+  this->generatePlot(gp); //Generate the plot and save it to a png using "outfile" for naming 
+}
 
 CauchyLorentzFunction::CauchyLorentzFunction() : FiniteFunction(){
   pm_x0=0;
@@ -59,15 +62,61 @@ CauchyLorentzFunction::CauchyLorentzFunction() : FiniteFunction(){
 };
 
 CauchyLorentzFunction::CauchyLorentzFunction(double range_min, double range_max, double x0, double gamma, std::string outfile) : FiniteFunction(range_min, range_max, outfile){  
-  if(gamma<0){
-    pm_gamma=0;
-    std::cout<<"gamma has to be larger than zero, set it to 0."<<std::endl;
+  if(gamma<=0){
+    pm_gamma=1;
+    std::cout<<"gamma has to be larger than zero, set it to 1."<<std::endl;
+  }
+  else{
+    pm_gamma=gamma;
   }
   pm_x0=x0;
-  pm_gamma=gamma;
-
 };
 
+CauchyLorentzFunction::~CauchyLorentzFunction(){
+  Gnuplot gp; //Set up gnuplot object
+  this->generatePlot(gp); //Generate the plot and save it to a png using "outfile" for naming 
+}
+
+NegativeCrystalBallDistribution::NegativeCrystalBallDistribution() : FiniteFunction(){
+  pm_x0=0;
+  pm_n=2;
+  pm_alpha=1;
+  pm_sigma=1;
+  this->checkPath("NegativeCrystalBallDistribution");
+};
+
+NegativeCrystalBallDistribution::NegativeCrystalBallDistribution(double range_min, double range_max, double x0, double n, double alpha, double sigma, std::string outfile) : FiniteFunction(range_min, range_max, outfile){  
+  if(n<=1){
+    pm_n=2;
+    std::cout<<"n has to be larger than 1, set it to 2."<<std::endl;
+  }
+  else{
+    pm_n=n;
+  }
+
+  if(alpha<0){
+    pm_alpha=1;
+    std::cout<<"alpha has to be larger than 0, set it to 1."<<std::endl;
+  }
+  else{
+    pm_alpha=alpha;
+  }
+
+  if(sigma<0){
+    pm_sigma=1;
+    std::cout<<"sigma has to be larger than 0, set it to 1."<<std::endl;
+  }
+  else{
+    pm_sigma=sigma;
+  }
+
+  pm_x0=x0;
+};
+
+NegativeCrystalBallDistribution::~NegativeCrystalBallDistribution(){
+  Gnuplot gp; //Set up gnuplot object
+  this->generatePlot(gp); //Generate the plot and save it to a png using "outfile" for naming 
+}
 
 /*
 ###################
@@ -79,10 +128,55 @@ void FiniteFunction::setRangeMax(double RMax) {m_RMax = RMax;};
 void FiniteFunction::setOutfile(std::string Outfile) {this->checkPath(Outfile);};
 
 void NormalDistributionFunction::setMu(double mu) {pm_mu = mu;};
-void NormalDistributionFunction::setSigma(double sigma) {pm_sigma = sigma;};
+void NormalDistributionFunction::setSigma(double sigma){
+  if(sigma<=0){
+    pm_sigma=1;
+    std::cout<<"sigma has to be larger than 0, set it to 1."<<std::endl;
+  } 
+  else{
+    pm_sigma = sigma;
+  }
+};
 
 void CauchyLorentzFunction::setX0(double x0) {pm_x0 = x0;};
-void CauchyLorentzFunction::setGamma(double gamma) {pm_gamma = gamma;};
+void CauchyLorentzFunction::setGamma(double gamma){
+  if(gamma<=0){
+    pm_gamma=1;
+    std::cout<<"gamma has to be larger than 0, set it to 1."<<std::endl;
+  } 
+  else{
+    pm_gamma = gamma;
+  }
+};
+
+void NegativeCrystalBallDistribution::setX0(double x0) {pm_x0 = x0;};
+void NegativeCrystalBallDistribution::setN(double n){
+  if(n<=1){
+    pm_n=2;
+    std::cout<<"n has to be larger than 1, set it to 2."<<std::endl;
+  } 
+  else{
+    pm_n = n;
+  }
+};
+void NegativeCrystalBallDistribution::setAlpha(double alpha){
+  if(alpha<=0){
+    pm_alpha=1;
+    std::cout<<"alpha has to be larger than 0, set it to 1."<<std::endl;
+  } 
+  else{
+    pm_alpha = alpha;
+  }
+};
+void NegativeCrystalBallDistribution::setSigma(double sigma){
+  if(sigma<=0){
+    pm_sigma=1;
+    std::cout<<"sigma has to be larger than 0, set it to 1."<<std::endl;
+  } 
+  else{
+    pm_sigma = sigma;
+  }
+};
 
 /*
 ###################
@@ -95,6 +189,11 @@ double FiniteFunction::rangeMax() {return m_RMax;};
 double NormalDistributionFunction::getMu() {return pm_mu;};
 double NormalDistributionFunction::getSigma() {return pm_sigma;};
 
+double NegativeCrystalBallDistribution::getX0() {return pm_x0;};
+double NegativeCrystalBallDistribution::getN() {return pm_n;};
+double NegativeCrystalBallDistribution::getAlpha() {return pm_alpha;};
+double NegativeCrystalBallDistribution::getSigma() {return pm_sigma;};
+
 /*
 ###################
 //Function eval
@@ -103,6 +202,46 @@ double NormalDistributionFunction::getSigma() {return pm_sigma;};
 double FiniteFunction::invxsquared(double x) {return 1/(1+x*x);};
 double FiniteFunction::callFunction(double x) {return this->invxsquared(x);}; //(overridable)
 
+
+double NormalDistributionFunction::normalDistribution(double x){
+ return ( 1/(pm_sigma*std::sqrt(2*M_PI)) )*std::exp(-0.5*(x-pm_mu)*(x-pm_mu)/(pm_sigma*pm_sigma));
+};
+
+double NormalDistributionFunction::callFunction(double x){
+  return this->normalDistribution(x);
+};
+
+double CauchyLorentzFunction::CauchyLorentzDistributionFunction(double x){
+ return 1/( M_PI*pm_gamma*(1+((x-pm_x0)/pm_gamma)*((x-pm_x0)/pm_gamma)) );
+};
+
+double CauchyLorentzFunction::callFunction(double x){
+  return this->CauchyLorentzDistributionFunction(x);
+};
+
+double NegativeCrystalBallDistribution::NegativeCrystalBallDistributionFunction(double x){
+  
+  double exp1, A, B, C, D, N;
+  
+  exp1=(x-pm_x0)/pm_sigma;
+
+  C=pm_n/pm_alpha*(1/(pm_n-1))*std::exp(-pm_alpha*pm_alpha/2);
+  D=sqrt(M_PI/2)*(1+std::erf(pm_alpha/std::sqrt(2)));
+  N=1/(pm_sigma*(C+D)); 
+
+  if(exp1>-pm_alpha){
+     return N*std::exp(-exp1*exp1/2);
+  }
+  else{
+    A=pow((pm_n/pm_alpha), pm_n)*exp(-pm_alpha*pm_alpha/2);
+    B=pm_n/pm_alpha-pm_alpha;
+    return N*A*std::pow(B-exp1, -pm_n);
+  }
+};
+
+double NegativeCrystalBallDistribution::callFunction(double x){
+  return this->NegativeCrystalBallDistributionFunction(x);
+};
 /*
 ###################
 Integration by hand (output needed to normalise function when plotting)
@@ -137,32 +276,6 @@ double FiniteFunction::integral(int Ndiv) { //public
 
 
 
-NormalDistributionFunction::~NormalDistributionFunction(){
-  Gnuplot gp; //Set up gnuplot object
-  this->generatePlot(gp); //Generate the plot and save it to a png using "outfile" for naming 
-}
-
-CauchyLorentzFunction::~CauchyLorentzFunction(){
-  Gnuplot gp; //Set up gnuplot object
-  this->generatePlot(gp); //Generate the plot and save it to a png using "outfile" for naming 
-}
-
-double NormalDistributionFunction::normalDistribution(double x){
- return ( 1/(pm_sigma*sqrt(2*M_PI)) )*exp(-0.5*(x-pm_mu)*(x-pm_mu)/(pm_sigma*pm_sigma));
-};
-
-double NormalDistributionFunction::callFunction(double x){
-  return this->normalDistribution(x);
-};
-
-double CauchyLorentzFunction::CauchyLorentzDistributionFunction(double x){
- return 1/( M_PI*pm_gamma*(1+((x-pm_x0)/pm_gamma)*((x-pm_x0)/pm_gamma)) );
-};
-
-double CauchyLorentzFunction::callFunction(double x){
-  return this->CauchyLorentzDistributionFunction(x);
-};
-
 /*
 ###################
 //Helper functions 
@@ -178,10 +291,47 @@ void FiniteFunction::checkPath(std::string outfile){
 
 //Print (overridable)
 void FiniteFunction::printInfo(){
+  std::cout << "--------------------"<< std::endl;
   std::cout << "rangeMin: " << m_RMin << std::endl;
   std::cout << "rangeMax: " << m_RMax << std::endl;
   std::cout << "integral: " << m_Integral << ", calculated using " << m_IntDiv << " divisions" << std::endl;
   std::cout << "function: " << m_FunctionName << std::endl;
+  std::cout << "--------------------"<< std::endl;
+}
+
+void NormalDistributionFunction::printInfo(){
+  std::cout << "--------------------"<< std::endl;
+  std::cout << "rangeMin: " << m_RMin << std::endl;
+  std::cout << "rangeMax: " << m_RMax << std::endl;
+  std::cout << "mu: " << pm_mu << std::endl;
+  std::cout << "sigma: " << pm_sigma << std::endl;
+  std::cout << "integral: " << m_Integral << ", calculated using " << m_IntDiv << " divisions" << std::endl;
+  std::cout << "function: " << m_FunctionName << std::endl;
+  std::cout << "--------------------"<< std::endl;
+}
+
+void CauchyLorentzFunction::printInfo(){
+  std::cout << "--------------------"<< std::endl;
+  std::cout << "rangeMin: " << m_RMin << std::endl;
+  std::cout << "rangeMax: " << m_RMax << std::endl;
+  std::cout << "x0: " << pm_x0 << std::endl;
+  std::cout << "gamma: " << pm_gamma << std::endl;
+  std::cout << "integral: " << m_Integral << ", calculated using " << m_IntDiv << " divisions" << std::endl;
+  std::cout << "function: " << m_FunctionName << std::endl;
+  std::cout << "--------------------"<< std::endl;
+}
+
+void NegativeCrystalBallDistribution::printInfo(){
+  std::cout << "--------------------"<< std::endl;
+  std::cout << "rangeMin: " << m_RMin << std::endl;
+  std::cout << "rangeMax: " << m_RMax << std::endl;
+  std::cout << "x0: " << pm_x0 << std::endl;
+  std::cout << "n: " << pm_n << std::endl;
+  std::cout << "alpha: " << pm_alpha << std::endl;
+  std::cout << "sigma: " << pm_sigma << std::endl;
+  std::cout << "integral: " << m_Integral << ", calculated using " << m_IntDiv << " divisions" << std::endl;
+  std::cout << "function: " << m_FunctionName << std::endl;
+  std::cout << "--------------------"<< std::endl;
 }
 
 /*

@@ -40,9 +40,22 @@ data_file.close();
 
 
 
-CauchyLorentzFunction ff(-10,10,0,-2,"gamma");
-ff.plotData(xvec, 100, true);
-ff.plotFunction();
-ff.~CauchyLorentzFunction();
+NormalDistributionFunction ND(-10, 10, 2, 1, "NormalDistribution");
+ND.printInfo();
+ND.plotData(xvec, 200, true);
+ND.plotFunction();
+ND.~NormalDistributionFunction();
+
+CauchyLorentzFunction CLD(-10, 10, 2, 1, "CauchyLorentzDistribution");
+CLD.printInfo();
+CLD.plotData(xvec, 200, true);
+CLD.plotFunction();
+CLD.~CauchyLorentzFunction();
+
+NegativeCrystalBallDistribution NCBD(-10, 10, 2, 2, 1, 2, "NegativeCrystalBallDistribution");
+NCBD.printInfo();
+NCBD.plotData(xvec, 200, true);
+NCBD.plotFunction();
+NCBD.~NegativeCrystalBallDistribution();
 
 }

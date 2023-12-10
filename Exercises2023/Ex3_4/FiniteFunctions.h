@@ -14,7 +14,7 @@ public:
   double rangeMax(); //High end of the range the function is defined within
   double integral(int Ndiv = 1000); 
   std::vector< std::pair<double,double> > scanFunction(int Nscan = 1000); //Scan over function to plot it (slight hack needed to plot function in gnuplot)
-  void setRangeMin(double RMin);
+  void setRangeMin(double RMin); 
   void setRangeMax(double RMax);
   void setOutfile(std::string outfile);
   void plotFunction(); //Plot the function using scanFunction
@@ -60,7 +60,8 @@ public:
   double getSigma();
   void setMu(double mu);
   void setSigma(double sigma);
-  
+  void printInfo();
+
 private:
 
   double pm_sigma;
@@ -80,11 +81,40 @@ public:
   double getGamma();
   void setX0(double x0);
   void setGamma(double gamma);
-  
+  void printInfo();
+
 private:
 
   double pm_x0;
   double pm_gamma;
   double CauchyLorentzDistributionFunction(double x);
+
+};
+
+
+class NegativeCrystalBallDistribution : public FiniteFunction{
+
+public:
+  NegativeCrystalBallDistribution();
+  NegativeCrystalBallDistribution(double range_min, double range_max, double x0, double n, double alpha, double sigma, std::string outfile);
+  ~NegativeCrystalBallDistribution();
+  double callFunction(double x);
+  double getX0();
+  double getN();
+  double getAlpha();
+  double getSigma();
+  void setX0(double x0);
+  void setN(double n);
+  void setAlpha(double alpha);
+  void setSigma(double sigma);
+  void printInfo();
+
+private:
+
+  double pm_x0;
+  double pm_n;
+  double pm_alpha;
+  double pm_sigma;
+  double NegativeCrystalBallDistributionFunction(double x);
 
 };
