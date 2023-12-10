@@ -40,22 +40,28 @@ data_file.close();
 
 
 
-NormalDistributionFunction ND(-10, 10, 2, 1, "NormalDistribution");
+
+
+NormalDistributionFunction ND(-10, 10, 2, 3, "NormalDistribution");
 ND.printInfo();
-ND.plotData(xvec, 200, true);
+ND.plotData(xvec, 500, true);
 ND.plotFunction();
-ND.~NormalDistributionFunction();
+//ND.~NormalDistributionFunction(); //causes weird error
 
-CauchyLorentzFunction CLD(-10, 10, 2, 1, "CauchyLorentzDistribution");
+CauchyLorentzFunction CLD(-10, 10, 2, 3, "CauchyLorentzDistribution");
 CLD.printInfo();
-CLD.plotData(xvec, 200, true);
+CLD.plotData(xvec, 500, true);
 CLD.plotFunction();
-CLD.~CauchyLorentzFunction();
+//CLD.~CauchyLorentzFunction(); //causes weird error
 
-NegativeCrystalBallDistribution NCBD(-10, 10, 2, 2, 1, 2, "NegativeCrystalBallDistribution");
+vector<double> samples;
+
+NegativeCrystalBallDistribution NCBD(-25, 25, 2, 5, 0.5, 2, "NegativeCrystalBallDistribution");
 NCBD.printInfo();
-NCBD.plotData(xvec, 200, true);
+NCBD.plotData(xvec, 500, true);
+samples=NCBD.metropolis(10000, 2);
+NCBD.plotData(samples, 500, false);
 NCBD.plotFunction();
-NCBD.~NegativeCrystalBallDistribution();
+//NCBD.~NegativeCrystalBallDistribution(); //causes weird error
 
 }

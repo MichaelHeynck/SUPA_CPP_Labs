@@ -4,10 +4,12 @@
 #include "FiniteFunctions.h"
 #include <filesystem> //To check extensions in a nice way
 #include <math.h>
+#include <random>
 
 #include "gnuplot-iostream.h" //Needed to produce plots (not part of the course) 
 
 using std::filesystem::path;
+
 
 //Empty constructor
 FiniteFunction::FiniteFunction(){
@@ -274,6 +276,41 @@ double FiniteFunction::integral(int Ndiv) { //public
 }
 
 
+std::vector<double> FiniteFunction::metropolis(int length, float width=1){
+
+  std::vector<double> vector;
+  float seed, y, A, T, f_tmp;
+
+  std::random_device rd;
+  std::mt19937 mtEngine{rd()};
+  std::uniform_real_distribution<float> uniformPDF{m_RMin, m_RMax};
+  std::uniform_real_distribution<float> uniformPDF_0to1{0,1};
+
+  seed=uniformPDF(mtEngine);
+
+  for(int i=0; i<length; i++){
+    std::normal_distribution<float> gaussianPDF{seed, width};
+
+    y=gaussianPDF(mtEngine);
+    f_tmp=this->callFunction(y)/this->callFunction(seed);
+    if(f_tmp<=1){
+      A=f_tmp;
+    }
+    else{
+      A=1;
+    }
+    T=uniformPDF_0to1(mtEngine);
+    if(T<A){
+      vector.push_back(y);
+      seed=y;
+    }
+    else{
+      vector.push_back(seed);
+    }
+  }
+  	
+  return vector;
+}
 
 
 /*
@@ -433,8 +470,8 @@ void FiniteFunction::generatePlot(Gnuplot &gp){
     gp << "set xrange ["<<m_RMin<<":"<<m_RMax<<"]\n";
     gp << "set style line 1 lt 1 lw 2 pi 1 ps 0\n";
     gp << "plot '-' with linespoints ls 1 title '"<<m_FunctionName<<"', '-' with points ps 1 lc rgb 'black' pt 7 title 'data'\n";
-    gp.send1d(m_function_scan);
     gp.send1d(m_data);
+    gp.send1d(m_function_scan);
   }
   else if (m_plotfunction==true && m_plotsamplepoints==true){
     gp << "set terminal pngcairo\n";
