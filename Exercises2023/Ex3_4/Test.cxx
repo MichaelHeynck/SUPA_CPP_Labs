@@ -1,7 +1,7 @@
 /*
 Author: Michael Heynck
 
-
+Date: 11/12/2023
 */
 
 
@@ -18,11 +18,10 @@ using namespace std;
     
 
 /*
-circle with radius r inside square of length 2r
+Assume a circle with radius r inside square of length 2r.
 
 number density rho (numbers N per area A) is uniform, rho_circle==rho_square ==> N_square/A_square==N_circle/A_circle ==>
 ==> N_square/((2*r)^2)==N_circle/(pi*r^2) ==> pi=4*N_circle/N_square
-
 
 */
 float getPi(float radius, int n_random){
@@ -49,14 +48,14 @@ float getPi(float radius, int n_random){
         counter_square++;
     }
     
-    return (float)4*counter_circle/counter_square;   
+    return 4*(float)counter_circle/(float)counter_square;   
 }
+
 
 
 int main (){
 
-
-
+// read the data and save it to a vector
 ifstream data_file;
 
 data_file.open("/workspaces/SUPA_CPP_Labs_mh2065/Exercises2023/Ex3_4/Outputs/data/MysteryData24212.txt");
@@ -76,7 +75,8 @@ lines++;
 lines-=1; 
 data_file.close();
 
-vector<double> samples;
+
+vector<double> samples; //contains samples collected via the metropolis algorithm
 
 NormalDistributionFunction ND(-25, 25, 2, 3, "NormalDistribution");
 ND.printInfo();
@@ -84,7 +84,7 @@ ND.plotData(xvec, 500, true);
 samples=ND.metropolis(10000, 2);
 ND.plotData(samples, 500, false);
 ND.plotFunction();
-//ND.~NormalDistributionFunction(); //causes weird error
+
 
 CauchyLorentzFunction CLD(-25, 25, 2, 3, "CauchyLorentzDistribution");
 CLD.printInfo();
@@ -92,7 +92,7 @@ CLD.plotData(xvec, 500, true);
 samples=CLD.metropolis(10000, 2);
 CLD.plotData(samples, 500, false);
 CLD.plotFunction();
-//CLD.~CauchyLorentzFunction(); //causes weird error
+
 
 
 
@@ -102,7 +102,7 @@ NCBD.plotData(xvec, 500, true);
 samples=NCBD.metropolis(10000, 2);
 NCBD.plotData(samples, 500, false);
 NCBD.plotFunction();
-//NCBD.~NegativeCrystalBallDistribution(); //causes weird error
+
 
 float pi_radius=1;
 int pi_numbers=10000000;

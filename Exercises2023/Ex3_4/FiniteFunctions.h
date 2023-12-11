@@ -27,11 +27,11 @@ public:
 
   //Protected members can be accessed by child classes but not users
 protected:
-  double m_RMin;
-  double m_RMax;
-  double m_Integral;
+  double m_RMin; //Low end of the range the function is defined within
+  double m_RMax; //High end of the range the function is defined within
+  double m_Integral; //value of the integral within boundaries
   int m_IntDiv = 0; //Number of division for performing integral
-  std::string m_FunctionName;
+  std::string m_FunctionName; //The name of the function
   std::string m_OutData; //Output filename for data
   std::string m_OutPng; //Output filename for plot
   std::vector< std::pair<double,double> > m_data; //input data points to plot
@@ -50,65 +50,70 @@ private:
 };
 
 
+//the class for the normal distribution has FiniteFunction as a base class
+//the callFunction() function is overriden. Custom, function relevant paremeters, are added as well 
 class NormalDistributionFunction : public FiniteFunction{
 
 public:
-  NormalDistributionFunction();
-  NormalDistributionFunction(double range_min, double range_max, double mu, double sigma, std::string outfile);
+  NormalDistributionFunction(); //empty constructor
+  NormalDistributionFunction(double range_min, double range_max, double mu, double sigma, std::string outfile); //variable constructor
   ~NormalDistributionFunction();
-  double callFunction(double x);
-  double getMu();
-  double getSigma();
-  void setMu(double mu);
-  void setSigma(double sigma);
-  void printInfo();
+  double callFunction(double x); //call the function associated to the class
+  double getMu(); //get the mu parameter
+  double getSigma(); //get the sigma parameter
+  void setMu(double mu); //set the mu parameter
+  void setSigma(double sigma); //set the sigma parameter
+  void printInfo(); //print some info of the function
 
 private:
 
-  double pm_sigma;
-  double pm_mu;
-  double normalDistribution(double x);
+  double pm_sigma; //sigma parameter
+  double pm_mu; //mu parameter
+  double normalDistribution(double x); //function that gives bach the normal distribution
 
 };
 
+//the class for the Cauchy Lorentz distribution has FiniteFunction as a base class
+//the callFunction() function is overriden. Custom, function relevant paremeters, are added as well 
 class CauchyLorentzFunction : public FiniteFunction{
 
 public:
-  CauchyLorentzFunction();
-  CauchyLorentzFunction(double range_min, double range_max, double x0, double gamma, std::string outfile);
-  ~CauchyLorentzFunction();
-  double callFunction(double x);
-  double getX0();
-  double getGamma();
-  void setX0(double x0);
-  void setGamma(double gamma);
-  void printInfo();
+  CauchyLorentzFunction(); //tmpty constructor
+  CauchyLorentzFunction(double range_min, double range_max, double x0, double gamma, std::string outfile); //variable constructor
+  ~CauchyLorentzFunction(); 
+  double callFunction(double x); //calls the function associated to the class
+  double getX0(); //get the x0 parameter
+  double getGamma(); //get the gamma parameter
+  void setX0(double x0); //set the x0 parameter
+  void setGamma(double gamma); //set the gamma parameter
+  void printInfo(); //print some infos of the function
 
 private:
 
-  double pm_x0;
-  double pm_gamma;
-  double CauchyLorentzDistributionFunction(double x);
+  double pm_x0; //private x0 parameter
+  double pm_gamma; //private gamma parameter
+  double CauchyLorentzDistributionFunction(double x); //function used to evaluate the Cauchy Lorentz distribution
 
 };
 
-
+//the class for the negative crystal ball distribution has FiniteFunction as a base class
+//the callFunction() function is overriden. Custom, function relevant paremeters, are added as well 
 class NegativeCrystalBallDistribution : public FiniteFunction{
 
 public:
-  NegativeCrystalBallDistribution();
-  NegativeCrystalBallDistribution(double range_min, double range_max, double x0, double n, double alpha, double sigma, std::string outfile);
+  NegativeCrystalBallDistribution(); //empty constructor
+  NegativeCrystalBallDistribution(double range_min, double range_max, double x0, double n, double alpha, double sigma, std::string outfile); // variable constructor
   ~NegativeCrystalBallDistribution();
-  double callFunction(double x);
-  double getX0();
-  double getN();
-  double getAlpha();
-  double getSigma();
-  void setX0(double x0);
-  void setN(double n);
-  void setAlpha(double alpha);
-  void setSigma(double sigma);
-  void printInfo();
+  double callFunction(double x); //call the function associated with this class
+  double getX0(); //get the x0 parameter
+  double getN(); //get the n parameter
+  double getAlpha(); //get the alpha parameter
+  double getSigma(); //get the sigma parameter
+  void setX0(double x0); //set the x0 parameter
+  void setN(double n); //set the n parameter
+  void setAlpha(double alpha); //set the alpha parameter
+  void setSigma(double sigma); //set the sigma parameter
+  void printInfo(); //print some info about the function
 
 private:
 

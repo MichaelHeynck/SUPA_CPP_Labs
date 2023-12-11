@@ -34,12 +34,14 @@ FiniteFunction::~FiniteFunction(){
   this->generatePlot(gp); //Generate the plot and save it to a png using "outfile" for naming 
 }
 
+//empty contructor fot the normal distribution, calls the empty constructor of FiniteFunction and sets addidional class dependent variables 
 NormalDistributionFunction::NormalDistributionFunction() : FiniteFunction(){
   pm_mu=0;
   pm_sigma=1;
   this->checkPath("NormalDistributionFunction");
 };
 
+//initialised contructor fot the normal distribution, calls the initialised constructor of FiniteFunction and sets addidional class dependent variables
 NormalDistributionFunction::NormalDistributionFunction(double range_min, double range_max, double mu, double sigma, std::string outfile) : FiniteFunction(range_min, range_max, outfile){  
   if(sigma<=0){
     pm_sigma=1;
@@ -52,17 +54,18 @@ NormalDistributionFunction::NormalDistributionFunction(double range_min, double 
   
 };
 
-NormalDistributionFunction::~NormalDistributionFunction(){
-  Gnuplot gp; //Set up gnuplot object
-  this->generatePlot(gp); //Generate the plot and save it to a png using "outfile" for naming 
+//destructor for the normal distribution function
+NormalDistributionFunction::~NormalDistributionFunction(){ 
 }
 
+//empty contructor fot the Cauchy Lorentz distribution, calls the empty constructor of FiniteFunction and sets addidional class dependent variables 
 CauchyLorentzFunction::CauchyLorentzFunction() : FiniteFunction(){
   pm_x0=0;
   pm_gamma=1;
   this->checkPath("CauchyLorentzFunction");
 };
 
+//initialised contructor fot the Cauchy Lorentz distribution, calls the initialised constructor of FiniteFunction and sets addidional class dependent variables
 CauchyLorentzFunction::CauchyLorentzFunction(double range_min, double range_max, double x0, double gamma, std::string outfile) : FiniteFunction(range_min, range_max, outfile){  
   if(gamma<=0){
     pm_gamma=1;
@@ -74,11 +77,10 @@ CauchyLorentzFunction::CauchyLorentzFunction(double range_min, double range_max,
   pm_x0=x0;
 };
 
+//destructor for the Cauchy Lorentz distribution function
 CauchyLorentzFunction::~CauchyLorentzFunction(){
-  Gnuplot gp; //Set up gnuplot object
-  this->generatePlot(gp); //Generate the plot and save it to a png using "outfile" for naming 
 }
-
+//empty contructor fot the negative crystal ball distribution, calls the empty constructor of FiniteFunction and sets addidional class dependent variables 
 NegativeCrystalBallDistribution::NegativeCrystalBallDistribution() : FiniteFunction(){
   pm_x0=0;
   pm_n=2;
@@ -87,6 +89,7 @@ NegativeCrystalBallDistribution::NegativeCrystalBallDistribution() : FiniteFunct
   this->checkPath("NegativeCrystalBallDistribution");
 };
 
+//initialised contructor fot the negative crystal ball distribution, calls the initialised constructor of FiniteFunction and sets addidional class dependent variables
 NegativeCrystalBallDistribution::NegativeCrystalBallDistribution(double range_min, double range_max, double x0, double n, double alpha, double sigma, std::string outfile) : FiniteFunction(range_min, range_max, outfile){  
   if(n<=1){
     pm_n=2;
@@ -115,9 +118,10 @@ NegativeCrystalBallDistribution::NegativeCrystalBallDistribution(double range_mi
   pm_x0=x0;
 };
 
+//destructor for the negative crystal ball distribution function
 NegativeCrystalBallDistribution::~NegativeCrystalBallDistribution(){
-  Gnuplot gp; //Set up gnuplot object
-  this->generatePlot(gp); //Generate the plot and save it to a png using "outfile" for naming 
+  Gnuplot gp; 
+  this->generatePlot(gp); 
 }
 
 /*
@@ -275,7 +279,8 @@ double FiniteFunction::integral(int Ndiv) { //public
   else return m_Integral; //Don't bother re-calculating integral if Ndiv is the same as the last call
 }
 
-
+//the metropolis algorithm used to sample data points from a distribution function
+//width is the sigma value used in the normal distribution function in the algorithm
 std::vector<double> FiniteFunction::metropolis(int length, float width=1){
 
   std::vector<double> vector;
@@ -308,7 +313,6 @@ std::vector<double> FiniteFunction::metropolis(int length, float width=1){
       vector.push_back(seed);
     }
   }
-  	
   return vector;
 }
 
